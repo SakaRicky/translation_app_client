@@ -6,7 +6,7 @@ export type State = {
     user: User | null,
 };
 
-const initialState: State = {
+export const initialState: State = {
     user: null,
 };
 

@@ -4,7 +4,9 @@ import {
   AppBar,
   Toolbar,
   makeStyles,
-  Typography
+  Typography,
+  Button,
+  ThemeProvider
 } from '@material-ui/core';
 import {
   Switch,
@@ -14,7 +16,8 @@ import {
 import { Login } from './pages/login';
 import Signup from './pages/signup';
 import Home from './pages/home';
-import { setUser, useStateValue } from 'state';
+import { setUser, useStateValue, initUserState } from 'state';
+import { theme } from 'theme';
 
 const useStyles = makeStyles(theme => {
   return {
@@ -26,26 +29,13 @@ const useStyles = makeStyles(theme => {
       },
           appToolbar: {
           display: "flex",
-          justifyContent: "center"
+          justifyContent: "space-between"
       },
       toolbar: theme.mixins.toolbar,
-      paper: {
-          marginTop: theme.spacing(8),
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-      },
-          avatar: {
-          margin: theme.spacing(1),
-          backgroundColor: theme.palette.secondary.main,
-      },
-      form: {
-          width: '100%', // Fix IE 11 issue.
-          marginTop: theme.spacing(1),
-      },
-      submit: {
-          margin: theme.spacing(3, 0, 2),
-      },
+      logout: {
+        backgroundColor: theme.palette.warning.main,
+        borderRadius: theme.spacing(0.5)
+      }
   }})
 
 function App() {
@@ -66,28 +56,41 @@ function App() {
     }
   }, [])
 
+  const handleLogout = () => {
+    dispatch(initUserState());
+    window.localStorage.removeItem('loggedUser')
+    history.push('/login')
+  }
+
   return (
-    <div className="App">
-      <AppBar position="fixed" className={classes.appBar}>
-            <Toolbar className={classes.appToolbar}>
-                <Typography variant="h6" noWrap>
-                    TS_APP
-                </Typography>
-            </Toolbar>
-        </AppBar>
-        <div className={classes.toolbar} />
-        <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route path="/login">
-              <Login />
-            </Route>
-            <Route path="/signup">
-              <Signup />
-            </Route>
-          </Switch>
-    </div>
+    <ThemeProvider theme={theme}>
+        <div className="App">
+          <AppBar position="fixed" className={classes.appBar}>
+                <Toolbar className={classes.appToolbar}>
+                    <Typography variant="h6" noWrap>
+                            TS_APP
+                    </Typography>
+                    <div className={classes.logout}>
+                      <Button onClick={handleLogout}>
+                        Logout
+                      </Button>
+                    </div>
+                </Toolbar>
+            </AppBar>
+            <div className={classes.toolbar} />
+            <Switch>
+                <Route exact path="/">
+                  <Home />
+                </Route>
+                <Route path="/login">
+                  <Login />
+                </Route>
+                <Route path="/signup">
+                  <Signup />
+                </Route>
+              </Switch>
+        </div>
+    </ThemeProvider>
   );
 }
 
